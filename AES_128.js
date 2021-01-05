@@ -5,17 +5,6 @@
 //https://www.youtube.com/watch?v=dRYHSf5A4lw
 
 
-const rCon = [
-  ["01", "02", "04", "08", "10", "20", "40", "80", "1b", "36"],
-  ["00", "00", "00", "00", "00", "00", "00", "00", "00", "00"],
-  ["00", "00", "00", "00", "00", "00", "00", "00", "00", "00"],
-  ["00", "00", "00", "00", "00", "00", "00", "00", "00", "00"],
-];
-
-
-
-
-
 /*
 Only for Reference
 Mix Column
@@ -32,6 +21,14 @@ const inverseMultMatrix = [
   ['13','9','14','11'],
   ['11','13','9','14'],
 ]*/
+
+const rCon = [
+  ["01", "02", "04", "08", "10", "20", "40", "80", "1b", "36"],
+  ["00", "00", "00", "00", "00", "00", "00", "00", "00", "00"],
+  ["00", "00", "00", "00", "00", "00", "00", "00", "00", "00"],
+  ["00", "00", "00", "00", "00", "00", "00", "00", "00", "00"],
+];
+
 
 const sBox = [
 [null,	"0",	"1",	"2",	"3",	"4",	"5",	"6",	"7",	"8",	"9",	"a",	"b",	"c",	"d",	"e",	"f"],
@@ -683,7 +680,6 @@ const hexIndex = [null,	"0",	"1",	"2",	"3",	"4",	"5",	"6",	"7",	"8",	"9",	"a",	"
     
 
 function getHexIndex (hexa) {
-  const hexIndex = [null,	"0",	"1",	"2",	"3",	"4",	"5",	"6",	"7",	"8",	"9",	"a",	"b",	"c",	"d",	"e",	"f"]
   const hexIndexOutput = []
   hexIndexOutput.push(hexIndex.findIndex( entry => entry === hexa[0]))
   hexIndexOutput.push(hexIndex.findIndex( entry => entry === hexa[1]))
@@ -873,16 +869,18 @@ return xorMatrix
 
 function encryptAES128(plainText,keyPlainText) {
 
+    
+  // AES ALGORITHM //
+
+  //XOR of the State Matrix and Roundkey No.0 Matrix:
+  //Add Round Key
+
   if(plainText.length!==16 || keyPlainText.length!==16){
     throw "plain text and key must have 128 bits"
   }
 
 
 
-// AES ALGORITHM //
-
-//XOR of the State Matrix and Roundkey No.0 Matrix:
-//Add Round Key
 
 let state = plainToHex(plainText)
 let key = plainToHex(keyPlainText)
@@ -929,11 +927,13 @@ return encryptedHex(cipherText)
 function decryptAES128(encryptedText,keyPlainText) {
 
 
+  // AES ALGORITHM DECRYPT //
+
+  if(encryptedText.length!==32 || keyPlainText.length!==16){
+    throw "plain text and key must have 128 bits"
+  }
+
   let cipherMatrix = encryptedTextArrayToMatrix(encryptedText)
-  // AES ALGORITHM //
-  
-  //XOR of the State Matrix and Roundkey No.0 Matrix:
-  //Add Round Key
 
   let key = plainToHex(keyPlainText)
   keyArray = generateKeyArray(key)
@@ -949,7 +949,7 @@ function decryptAES128(encryptedText,keyPlainText) {
   
   for (let i = 9; i >= 1; i--){
 
-    // Inverse ShiftRows
+  // Inverse ShiftRows
   let shiftRowMatrix = shiftRowTransformationInv(newStateMatrix)
   
   //SubBytes
